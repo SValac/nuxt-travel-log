@@ -21,6 +21,10 @@
     "@antfu/eslint-config": "^4.13.2",
     "eslint": "^9.28.0",
     "eslint-plugin-format": "^1.0.1",
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.0"
+  },
+  "lint-staged": {
+    "*": "npm run lint"
   }
 }
