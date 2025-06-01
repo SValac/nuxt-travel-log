@@ -9,6 +9,11 @@
     "source.organizeImports": "never"
   },
 
+  // Associate Tailwind CSS files with the Tailwind CSS language server
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+
   // Silent the stylistic rules in you IDE, but still auto fix them
   "eslint.rules.customizations": [
     { "rule": "style/*", "severity": "off", "fixable": true },
