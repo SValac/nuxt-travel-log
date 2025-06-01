@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+import { AppThemeToggle } from '#components';
 </script>
 
 <template>
@@ -10,6 +10,7 @@
       </NuxtLink>
     </div>
     <div class="navbar-end">
+      <AppThemeToggle />
       <a class="btn btn-accent">Sign in
         <Icon name="tabler:brand-github" size="24" />
       </a>
