@@ -19,7 +19,8 @@
     "@tailwindcss/vite": "^4.1.8",
     "nuxt": "^3.17.4",
     "tailwindcss": "^4.1.8",
-    "vue": "latest"
+    "vue": "latest",
+    "zod": "^3.25.44"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.13.2",
