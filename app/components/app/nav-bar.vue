@@ -11,9 +11,7 @@ import { AppThemeToggle } from '#components';
     </div>
     <div class="navbar-end">
       <AppThemeToggle />
-      <a class="btn btn-accent">Sign in
-        <Icon name="tabler:brand-github" size="24" />
-      </a>
+      <AuthButton />
     </div>
   </nav>
 </template>
