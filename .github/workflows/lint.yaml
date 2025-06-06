@@ -27,3 +27,4 @@ jobs:
           node-version: 22.x
       - run: npm install
       - run: npm run lint
+      - run: npm run db:migrate
