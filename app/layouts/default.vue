@@ -1,5 +1,7 @@
 <script setup lang="ts">
+const authStore = useAuthStore();
 
+await authStore.init(); // we await for the auth store to initialize. this uses suspense to wait for the auth store to be ready
 </script>
 
 <template>
