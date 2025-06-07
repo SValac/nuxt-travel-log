@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     const session = await auth.api.getSession({
       headers: event.headers,
     });
-    if (!session) {
+    if (!session?.user) {
       console.log('No session found, redirecting to home');
       return sendRedirect(event, '/', 302);
     }
