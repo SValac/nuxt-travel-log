@@ -2,8 +2,6 @@
 import { toTypedSchema } from '@vee-validate/zod';
 import { locationInsertSchema } from '~~/lib/db/schema';
 
-// Ensure the schema property is 'long' not 'log' if that's the intended field
-
 const { handleSubmit, errors } = useForm({
   validationSchema: toTypedSchema(locationInsertSchema),
 });
@@ -25,62 +23,29 @@ const onSubmit = handleSubmit((values) => {
       class="flex flex-col gap-2"
       @submit.prevent="onSubmit"
     >
-      <fieldset class="fieldset ">
-        <legend class="fieldset-legend">
-          Name
-        </legend>
-        <Field
-          name="name"
-          type="text"
-          class="input w-full"
-          :class="{ 'input-error': errors.name }"
-        />
-        <p v-if="errors.name" class="label text-error">
-          {{ errors.name }}
-        </p>
-      </fieldset>
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend">
-          Description
-        </legend>
-        <Field
-          name="description"
-          type="textarea"
-          class="textarea h-24 w-full"
-          :class="{ 'textarea-error': errors.description }"
-        />
-        <p v-if="errors.description" class="label text-error">
-          {{ errors.description }}
-        </p>
-      </fieldset>
-      <fieldset class="fieldset ">
-        <legend class="fieldset-legend">
-          Latitude
-        </legend>
-        <Field
-          name="lat"
-          type="number"
-          class="input w-full"
-          :class="{ 'input-error': errors.lat }"
-        />
-        <p v-if="errors.lat" class="label text-error">
-          {{ errors.lat }}
-        </p>
-      </fieldset>
-      <fieldset class="fieldset ">
-        <legend class="fieldset-legend">
-          Longitude
-        </legend>
-        <Field
-          name="long"
-          type="number"
-          class="input w-full"
-          :class="{ 'input-error': errors.long }"
-        />
-        <p v-if="errors.long" class="label text-error">
-          {{ errors.long }}
-        </p>
-      </fieldset>
+      <AppFormField
+        name="name"
+        label="Name"
+        :error="errors.name"
+      />
+      <AppFormField
+        name="description"
+        label="Description"
+        type="textarea"
+        :error="errors.description"
+      />
+      <AppFormField
+        name="lat"
+        label="Latitude"
+        type="number"
+        :error="errors.lat"
+      />
+      <AppFormField
+        name="long"
+        label="Longitude"
+        type="number"
+        :error="errors.long"
+      />
       <div class="flex justify-end gap-2">
         <button
           type="button"
