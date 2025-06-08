@@ -26,5 +26,11 @@ export default defineNuxtConfig({
   colorMode: {
     dataValue: 'theme',
   },
-  modules: ['@nuxt/eslint', '@nuxt/icon', '@nuxtjs/color-mode', '@pinia/nuxt'],
+  modules: [
+    '@nuxt/eslint',
+    '@nuxt/icon',
+    '@nuxtjs/color-mode',
+    '@pinia/nuxt',
+    '@vee-validate/nuxt',
+  ],
 });
