@@ -1,13 +1,39 @@
 <script setup lang="ts">
+import type { FetchError } from 'ofetch';
+
 import { toTypedSchema } from '@vee-validate/zod';
 import { locationInsertSchema } from '~~/lib/db/schema';
 
-const { handleSubmit, errors } = useForm({
+const router = useRouter();
+const submitError = ref('');
+
+const { handleSubmit, errors, meta } = useForm({
   validationSchema: toTypedSchema(locationInsertSchema),
 });
 
-const onSubmit = handleSubmit((values) => {
-  console.log(values);
+const onSubmit = handleSubmit(async (values) => {
+  try {
+    const response = await $fetch('/api/v1/locations', {
+      method: 'POST',
+      body: values,
+    });
+
+    console.log(response);
+  }
+  catch (e) {
+    const error = e as FetchError;
+    submitError.value = error.statusMessage || 'An error occurred while adding the location.';
+  }
+});
+onBeforeRouteLeave(() => {
+  if (meta.value.dirty) {
+    // eslint-disable-next-line no-alert
+    const confirmLeave = window.confirm('You have unsaved changes. Are you sure you want to leave?');
+    if (!confirmLeave) {
+      return false;
+    }
+  }
+  return true;
 });
 </script>
 
@@ -18,6 +44,13 @@ const onSubmit = handleSubmit((values) => {
         Add Location
       </h1>
       <p>A location is a place you have traveled or will travel to. it can be a city, country, state or point of interest. You can add specific times you visited this location after adding it.</p>
+    </div>
+    <div
+      v-if="submitError"
+      role="alert"
+      class="alert alert-error"
+    >
+      <span>{{ submitError }}</span>
     </div>
     <form
       class="flex flex-col gap-2"
@@ -49,7 +82,8 @@ const onSubmit = handleSubmit((values) => {
       <div class="flex justify-end gap-2">
         <button
           type="button"
-          class="btn btn-outline "
+          class="btn btn-outline"
+          @click="router.back"
         >
           Cancel
           <Icon
