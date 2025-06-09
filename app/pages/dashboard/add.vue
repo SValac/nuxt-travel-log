@@ -6,13 +6,16 @@ import { locationInsertSchema } from '~~/lib/db/schema';
 
 const router = useRouter();
 const submitError = ref('');
+const isLoading = ref(false);
 
-const { handleSubmit, errors, meta } = useForm({
+const { handleSubmit, errors, meta, setErrors } = useForm({
   validationSchema: toTypedSchema(locationInsertSchema),
 });
 
 const onSubmit = handleSubmit(async (values) => {
   try {
+    submitError.value = '';
+    isLoading.value = true;
     const response = await $fetch('/api/v1/locations', {
       method: 'POST',
       body: values,
@@ -22,9 +25,16 @@ const onSubmit = handleSubmit(async (values) => {
   }
   catch (e) {
     const error = e as FetchError;
+    if (error.data?.data) {
+      setErrors(error.data?.data);
+    }
     submitError.value = error.statusMessage || 'An error occurred while adding the location.';
   }
+  finally {
+    isLoading.value = false;
+  }
 });
+
 onBeforeRouteLeave(() => {
   if (meta.value.dirty) {
     // eslint-disable-next-line no-alert
@@ -60,29 +70,34 @@ onBeforeRouteLeave(() => {
         name="name"
         label="Name"
         :error="errors.name"
+        :disabled="isLoading"
       />
       <AppFormField
         name="description"
         label="Description"
         type="textarea"
         :error="errors.description"
+        :disabled="isLoading"
       />
       <AppFormField
         name="lat"
         label="Latitude"
         type="number"
         :error="errors.lat"
+        :disabled="isLoading"
       />
       <AppFormField
         name="long"
         label="Longitude"
         type="number"
         :error="errors.long"
+        :disabled="isLoading"
       />
       <div class="flex justify-end gap-2">
         <button
           type="button"
           class="btn btn-outline"
+          :disabled="isLoading"
           @click="router.back"
         >
           Cancel
@@ -94,9 +109,12 @@ onBeforeRouteLeave(() => {
         <button
           type="submit"
           class="btn btn-primary"
+          :disabled="isLoading"
         >
           Add
+          <span v-if="isLoading" class="loading loading-spinner loading-sm" />
           <Icon
+            v-else
             name="tabler:circle-plus-filled"
             size="24"
           />
