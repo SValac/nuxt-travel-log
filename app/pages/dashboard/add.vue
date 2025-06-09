@@ -4,9 +4,12 @@ import type { FetchError } from 'ofetch';
 import { toTypedSchema } from '@vee-validate/zod';
 import { locationInsertSchema } from '~~/lib/db/schema';
 
+const { $csrfFetch } = useNuxtApp();
+
 const router = useRouter();
 const submitError = ref('');
 const isLoading = ref(false);
+const isSubmitted = ref(false);
 
 const { handleSubmit, errors, meta, setErrors } = useForm({
   validationSchema: toTypedSchema(locationInsertSchema),
@@ -16,12 +19,12 @@ const onSubmit = handleSubmit(async (values) => {
   try {
     submitError.value = '';
     isLoading.value = true;
-    const response = await $fetch('/api/v1/locations', {
+    await $csrfFetch('/api/v1/locations', {
       method: 'POST',
       body: values,
     });
-
-    console.log(response);
+    isSubmitted.value = true;
+    navigateTo('/dashboard');
   }
   catch (e) {
     const error = e as FetchError;
@@ -36,7 +39,7 @@ const onSubmit = handleSubmit(async (values) => {
 });
 
 onBeforeRouteLeave(() => {
-  if (meta.value.dirty) {
+  if (!isSubmitted.value && meta.value.dirty) {
     // eslint-disable-next-line no-alert
     const confirmLeave = window.confirm('You have unsaved changes. Are you sure you want to leave?');
     if (!confirmLeave) {
