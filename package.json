@@ -30,6 +30,7 @@
     "drizzle-zod": "^0.7.0",
     "nuxt": "^3.17.4",
     "pinia": "^3.0.3",
+    "slug": "^11.0.0",
     "tailwindcss": "^4.1.8",
     "vee-validate": "^4.15.1",
     "vue": "latest",
@@ -38,6 +39,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^4.13.2",
     "@iconify-json/tabler": "^1.2.18",
+    "@types/slug": "^5.0.9",
     "@vee-validate/nuxt": "^4.15.1",
     "daisyui": "^5.0.43",
     "drizzle-kit": "^0.31.1",
