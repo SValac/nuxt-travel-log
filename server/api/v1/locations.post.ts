@@ -3,6 +3,7 @@ import type { DrizzleError } from 'drizzle-orm';
 
 import db from '~~/lib/db';
 import { location, locationInsertSchema } from '~~/lib/db/schema';
+import slug from 'slug';
 
 export default defineEventHandler(async (event) => {
   if (!event.context.user) {
@@ -40,7 +41,7 @@ export default defineEventHandler(async (event) => {
   try {
     const [created] = await db.insert(location).values({
       ...response.data,
-      slug: response.data.name.toLowerCase().replace(/\s+/g, '-'),
+      slug: slug(response.data.name),
       userId: event.context.user?.id,
     }).returning();
 
