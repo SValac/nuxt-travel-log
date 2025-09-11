@@ -7,6 +7,8 @@ import { eq } from 'drizzle-orm';
 import { customAlphabet } from 'nanoid';
 import slugify from 'slug';
 
+const nanoId = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 5);
+
 export default defineEventHandler(async (event) => {
   if (!event.context.user) {
     return sendError(event, createError({
@@ -59,8 +61,8 @@ export default defineEventHandler(async (event) => {
     This ensures that even if two locations have the same name, they will have different slugs.
   */
   while (existingSlug) {
-    const nanoId = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 5);
-    const slugId = `${slug}-${nanoId}`;
+    const id = nanoId();
+    const slugId = `${slug}-${id}`;
     existingSlug = !!(await db.query.location.findFirst({
       where: eq(location.slug, slugId),
     }));
