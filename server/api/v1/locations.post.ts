@@ -3,7 +3,9 @@ import type { DrizzleError } from 'drizzle-orm';
 
 import db from '~~/lib/db';
 import { location, locationInsertSchema } from '~~/lib/db/schema';
-import slug from 'slug';
+import { eq } from 'drizzle-orm';
+import { customAlphabet } from 'nanoid';
+import slugify from 'slug';
 
 export default defineEventHandler(async (event) => {
   if (!event.context.user) {
@@ -38,10 +40,20 @@ export default defineEventHandler(async (event) => {
     }));
   }
 
+  let slug = slugify(response.data.name);
+  const existingSlug = await db.query.location.findFirst({
+    where: eq(location.slug, slug),
+  });
+
+  if (existingSlug) {
+    const nanoId = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 5);
+    slug += `-${nanoId}`;
+  }
+
   try {
     const [created] = await db.insert(location).values({
       ...response.data,
-      slug: slug(response.data.name),
+      slug,
       userId: event.context.user?.id,
     }).returning();
 
