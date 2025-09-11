@@ -3,7 +3,7 @@ import type { DrizzleError } from 'drizzle-orm';
 
 import db from '~~/lib/db';
 import { location, locationInsertSchema } from '~~/lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { customAlphabet } from 'nanoid';
 import slugify from 'slug';
 
@@ -39,6 +39,21 @@ export default defineEventHandler(async (event) => {
       statusCode: 422,
       statusMessage,
       data,
+    }));
+  }
+
+  const existingLocation = await db.query.location.findFirst({
+    where: and(
+      eq(location.name, response.data.name),
+      eq(location.userId, event.context.user.id),
+
+    ),
+  });
+
+  if (existingLocation) {
+    return sendError(event, createError({
+      statusCode: 409,
+      statusMessage: 'Location with this name already exists',
     }));
   }
 

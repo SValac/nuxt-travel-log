@@ -54,7 +54,7 @@ CREATE TABLE `location` (
 	`slug` text NOT NULL,
 	`description` text,
 	`lat` real NOT NULL,
-	`log` real NOT NULL,
+	`long` real NOT NULL,
 	`user_id` integer NOT NULL,
 	`created_at` integer NOT NULL,
 	`updated_at` integer NOT NULL,
@@ -62,6 +62,7 @@ CREATE TABLE `location` (
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `location_slug_unique` ON `location` (`slug`);--> statement-breakpoint
+CREATE UNIQUE INDEX `location_name_userId_unique` ON `location` (`name`,`user_id`);--> statement-breakpoint
 CREATE TABLE `locationLog` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`name` text NOT NULL,
