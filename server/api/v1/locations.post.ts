@@ -41,13 +41,33 @@ export default defineEventHandler(async (event) => {
   }
 
   let slug = slugify(response.data.name);
-  const existingSlug = await db.query.location.findFirst({
+  let existingSlug = !!(await db.query.location.findFirst({
     where: eq(location.slug, slug),
-  });
+  }));
 
-  if (existingSlug) {
+  /*
+    TODO: This while loop is a temporary solution to ensure slug uniqueness.
+    In a high-concurrency environment (like a web application with many users), this could lead to race conditions.
+    A more robust solution would involve database-level constraints or
+    a different strategy for generating unique slugs.
+
+    Before implementing a more robust solution, this approach should suffice for most use cases. But be aware of its limitations.
+    Additionally, consider implementing a retry mechanism or a more sophisticated slug generation strategy if you expect high traffic.
+
+    The loop checks if the generated slug already exists in the database. If it does, it appends a random string to the slug
+    using nanoid until a unique slug is found.
+    This ensures that even if two locations have the same name, they will have different slugs.
+  */
+  while (existingSlug) {
     const nanoId = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 5);
-    slug += `-${nanoId}`;
+    const slugId = `${slug}-${nanoId}`;
+    existingSlug = !!(await db.query.location.findFirst({
+      where: eq(location.slug, slugId),
+    }));
+    if (!existingSlug) {
+      slug = slugId;
+      break;
+    }
   }
 
   try {
