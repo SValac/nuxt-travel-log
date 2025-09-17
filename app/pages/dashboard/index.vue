@@ -10,7 +10,7 @@
 
 */
 
-const { data, status } = useFetch('/api/v1/locations', {
+const { data, status } = await useFetch('/api/v1/locations', {
   // allow navigating away from the page while the request is in flight
   // without cancelling the request
   lazy: true,
