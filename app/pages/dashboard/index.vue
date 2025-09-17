@@ -14,16 +14,6 @@ const { data, status } = useFetch('/api/v1/locations', {
   // allow navigating away from the page while the request is in flight
   // without cancelling the request
   lazy: true,
-  // initial cache time is 0, so its always fresh
-  // we can set a stale time if we want to revalidate after a certain period
-  // initialCache: 0,
-  // staleTime: 1000 * 60, // 1 minute
-  // refetch on window focus
-  // refetchOnWindowFocus: true,
-  // refetch on reconnect
-  // refetchOnReconnect: true,
-  // refetch when component is mounted
-  // refetchOnMount: true,
 });
 </script>
 
