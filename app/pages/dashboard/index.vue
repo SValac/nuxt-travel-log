@@ -19,6 +19,21 @@ const { data, status } = await useFetch('/api/v1/locations', {
   // without cancelling the request
   lazy: true,
 });
+
+const sidebarStore = useSidebarStore();
+
+// check if data changes and update sidebarStore
+watchEffect(() => {
+  if (data.value) {
+    sidebarStore.sidebarItems = data.value.map(location => ({
+      id: `location-${location.id}`,
+      label: location.name,
+      icon: 'tabler:map-pin-filled',
+      href: `#`,
+    }));
+  }
+  sidebarStore.isLoading = status.value === 'pending';
+});
 </script>
 
 <template>
