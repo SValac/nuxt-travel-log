@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import type { LngLatLike } from 'maplibre-gl';
 
-const style = 'https://demotiles.maplibre.org/style.json';
-const center = [-1.559482, 47.21322] as LngLatLike;
-const zoom = 8;
+import { CENTER_MX, MAP_DARK_STYLE, MAP_LIGHT_STYLE, MAP_ZOOM } from '~~/lib/constans';
+
+const colorMode = useColorMode();
+const style = computed(() => colorMode.value === 'dark' ? MAP_DARK_STYLE : MAP_LIGHT_STYLE);
 </script>
 
 <template>
   <MglMap
     :map-style="style"
-    :center="center"
-    :zoom="zoom"
+    :center="CENTER_MX as LngLatLike"
+    :zoom="MAP_ZOOM"
   >
     <MglNavigationControl />
   </MglMap>
