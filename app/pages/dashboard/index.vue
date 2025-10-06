@@ -1,38 +1,13 @@
 <script setup lang="ts">
-/*
-  we dont use $fetch because this is used in response to user events/actions (clicking, typing, etc)
-  if we want the data to be available when page load and you know that request can happen at the top level
-  before user interaction, use useFetch instead.
-
-  useFetch hanldles loading state, errors, and is SSR friendly. its loads data on server side during SSR
-  and then hydrates it on client side. and includes all headers and make that request in the context of the user
-  session (cookies, auth tokens, etc)
-
-*/
+const locationsStore = useLocationStore();
+const { locations, status } = storeToRefs(locationsStore);
 
 /*
   video timestamp 4:29:21
 */
 
-const { data, status } = await useFetch('/api/v1/locations', {
-  // allow navigating away from the page while the request is in flight
-  // without cancelling the request
-  lazy: true,
-});
-
-const sidebarStore = useSidebarStore();
-
-// check if data changes and update sidebarStore
-watchEffect(() => {
-  if (data.value) {
-    sidebarStore.sidebarItems = data.value.map(location => ({
-      id: `location-${location.id}`,
-      label: location.name,
-      icon: 'tabler:map-pin-filled',
-      href: `#`,
-    }));
-  }
-  sidebarStore.isLoading = status.value === 'pending';
+onMounted(() => {
+  locationsStore.refresh();
 });
 </script>
 
@@ -44,9 +19,9 @@ watchEffect(() => {
     <div v-if="status === 'pending'">
       <span class="loading loading-spinner loading-xl" />
     </div>
-    <div v-else-if="data && data.length > 0" class="flex flex-wrap gap-2 mt-2">
+    <div v-else-if="locations && locations.length > 0" class="flex flex-wrap gap-2 mt-2">
       <div
-        v-for="location in data"
+        v-for="location in locations"
         :key="location.id"
         class="card card-compact bg-base-300 h-40 w-72"
       >
