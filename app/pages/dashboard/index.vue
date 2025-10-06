@@ -10,6 +10,10 @@
 
 */
 
+/*
+  video timestamp 4:29:21
+*/
+
 const { data, status } = await useFetch('/api/v1/locations', {
   // allow navigating away from the page while the request is in flight
   // without cancelling the request
@@ -25,12 +29,25 @@ const { data, status } = await useFetch('/api/v1/locations', {
     <div v-if="status === 'pending'">
       <span class="loading loading-spinner loading-xl" />
     </div>
-    <div v-else-if="data">
-      <pre>{{ JSON.stringify(data, null, 2) }}</pre>
+    <div v-else-if="data && data.length > 0" class="flex flex-wrap gap-2 mt-2">
+      <div
+        v-for="location in data"
+        :key="location.id"
+        class="card card-compact bg-base-300 h-40 w-72"
+      >
+        <div class="card-body ">
+          <h3 class="text-lg font-bold">
+            {{ location.name }}
+          </h3>
+          <p class="overflow-hidden text-ellipsis line-clamp-4">
+            {{ location.description }}
+          </p>
+        </div>
+      </div>
     </div>
     <div
       v-else
-      class="flex flex-col gap-2 mt-4"
+      class="flex flex-col gap-2 mt-4 justify-center items-center"
     >
       <p>Add a location to get started</p>
       <NuxtLink
