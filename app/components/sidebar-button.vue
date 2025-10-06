@@ -18,7 +18,7 @@ const route = useRoute();
       'justify-start': props.showLabel,
     }"
   >
-    <Icon :name="`tabler:${props.icon}`" size="24" />
+    <Icon :name="`${props.icon}`" size="24" />
     <Transition name="grow">
       <span v-if="props.showLabel" class="line-clamp-1">{{ props.label }}</span>
     </Transition>
