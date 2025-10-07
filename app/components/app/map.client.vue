@@ -34,6 +34,16 @@ onMounted(() => {
               />
             </div>
           </template>
+          <MglPopup>
+            <div class="p-2">
+              <h3 class="font-bold text-lg">
+                {{ point.label }}
+              </h3>
+              <p class="text-sm text-balance">
+                {{ point.description || 'No description available.' }}
+              </p>
+            </div>
+          </MglPopup>
         </MglMarker>
       </MglMap>
     </div>
