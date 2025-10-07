@@ -9,6 +9,7 @@ to address this we can dynamically import this modules inside a function which w
 
 export const useMapStore = defineStore('useMapStore', () => {
   const mapPoints = ref<MapPoint[]>([]);
+  const selectedPoint = ref<MapPoint | null>(null);
 
   async function init() {
     // here we dynamically import the module only when this function is called (which should be only in client side)
@@ -38,6 +39,7 @@ export const useMapStore = defineStore('useMapStore', () => {
 
   return {
     mapPoints,
+    selectedPoint,
     init,
   };
 });

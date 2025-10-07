@@ -32,13 +32,14 @@ export const useLocationStore = defineStore('useLocationStore', () => {
         icon: 'tabler:map-pin-filled',
         href: `#`,
       }));
-      mapStore.mapPoints = data.value.map(location => ({
-        id: location.id,
-        label: location.name,
-        description: location.description,
-        lat: location.lat,
-        long: location.long,
-      }));
+      mapStore.mapPoints = data.value; // both types matches so we don't need map now
+      // .map(location => ({
+      //   id: location.id,
+      //   name: location.name,
+      //   description: location.description,
+      //   lat: location.lat,
+      //   long: location.long,
+      // }));
     }
     sidebarStore.isLoading = status.value === 'pending';
   });

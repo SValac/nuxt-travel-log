@@ -26,7 +26,7 @@ onMounted(() => {
           :coordinates="[point.long, point.lat]"
         >
           <template #marker>
-            <div class="tooltip tooltip-top" :data-tip="point.label">
+            <div class="tooltip tooltip-top" :data-tip="point.name">
               <Icon
                 name="tabler:map-pin-filled"
                 size="30"
@@ -37,7 +37,7 @@ onMounted(() => {
           <MglPopup>
             <div class="p-2">
               <h3 class="font-bold text-lg">
-                {{ point.label }}
+                {{ point.name }}
               </h3>
               <p class="text-sm text-balance">
                 {{ point.description || 'No description available.' }}
