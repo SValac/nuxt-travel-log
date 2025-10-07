@@ -11,22 +11,22 @@
 
 html[data-theme='dark'] {
   .maplibregl-popup-content {
-    @apply dark:text-white dark:bg-gray-800;
+    @apply text-white bg-gray-800;
   }
 
   .maplibregl-popup[class*='maplibregl-popup-anchor-bottom'] > .maplibregl-popup-tip {
-    @apply dark:border-t-gray-800;
+    @apply border-t-gray-800;
   }
 
   .maplibregl-popup[class*='maplibregl-popup-anchor-top'] > .maplibregl-popup-tip {
-    @apply dark:border-b-gray-800;
+    @apply border-b-gray-800;
   }
 
   .maplibregl-popup[class*='maplibregl-popup-anchor-left'] > .maplibregl-popup-tip {
-    @apply dark:border-r-gray-800;
+    @apply border-r-gray-800;
   }
 
   .maplibregl-popup[class*='maplibregl-popup-anchor-right'] > .maplibregl-popup-tip {
-    @apply dark:border-l-gray-800;
+    @apply border-l-gray-800;
   }
 }

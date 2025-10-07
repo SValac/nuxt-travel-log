@@ -3,7 +3,7 @@ const locationsStore = useLocationStore();
 const { locations, status } = storeToRefs(locationsStore);
 
 /*
-  video timestamp 4:29:21
+  video timestamp 5:29:21
 */
 
 onMounted(() => {
