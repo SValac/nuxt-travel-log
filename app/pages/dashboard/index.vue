@@ -26,7 +26,7 @@ onMounted(() => {
         class="card card-compact bg-base-300 h-40 w-72"
       >
         <div class="card-body ">
-          <h3 class="text-lg font-bold">
+          <h3 class="text-lg font-bold text-ellipsis line-clamp-1">
             {{ location.name }}
           </h3>
           <p class="overflow-hidden text-ellipsis line-clamp-4">

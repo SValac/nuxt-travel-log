@@ -6,7 +6,7 @@ const style = computed(() => colorMode.value === 'dark' ? MAP_DARK_STYLE : MAP_L
 </script>
 
 <template>
-  <div class="p-4">
+  <div class="px-4 pb-4">
     <div class="w-full h-full rounded-2xl overflow-hidden">
       <MglMap
         :map-style="style"
