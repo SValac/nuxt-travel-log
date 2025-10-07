@@ -7,7 +7,7 @@ await authStore.init(); // we await for the auth store to initialize. this uses 
 <template>
   <div class="flex min-h-dvh flex-col">
     <AppNavBar />
-    <main class="flex-1 flex">
+    <main class="flex-1 flex flex-col">
       <slot />
     </main>
   </div>

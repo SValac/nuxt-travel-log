@@ -16,15 +16,27 @@ export const useLocationStore = defineStore('useLocationStore', () => {
   });
 
   const sidebarStore = useSidebarStore();
+  const mapStore = useMapStore();
 
   // check if data changes and update sidebarStore
-  watchEffect(() => {
+  /*
+  we use watchEffect because it runs immediately and whenever any reactive dependency changes BUT it does NOT run on server side, so we get hydration issues.
+
+  Instead we can use effect() which run on server side and client side, so no hydration issues.
+  */
+  effect(() => {
     if (data.value) {
       sidebarStore.sidebarItems = data.value.map(location => ({
         id: `location-${location.id}`,
         label: location.name,
         icon: 'tabler:map-pin-filled',
         href: `#`,
+      }));
+      mapStore.mapPoints = data.value.map(location => ({
+        id: location.id,
+        label: location.name,
+        lat: location.lat,
+        long: location.long,
       }));
     }
     sidebarStore.isLoading = status.value === 'pending';
