@@ -1,10 +1,27 @@
 <script setup lang="ts">
+import type { MglEvent } from '@indoorequal/vue-maplibre-gl';
+import type { LngLat } from 'maplibre-gl';
+
 import { CENTER_MX, MAP_DARK_STYLE, MAP_LIGHT_STYLE, MAP_ZOOM } from '~~/lib/constans';
 
 const mapStore = useMapStore();
 
 const colorMode = useColorMode();
 const style = computed(() => colorMode.value === 'dark' ? MAP_DARK_STYLE : MAP_LIGHT_STYLE);
+
+function updateAddedPoint(location: LngLat) {
+  if (mapStore.addingPoint) {
+    mapStore.addingPoint.lat = location.lat;
+    mapStore.addingPoint.long = location.lng;
+  }
+}
+
+function onDoubleClick(mglEvent: MglEvent<'dblclick'>) {
+  if (mapStore.addingPoint) {
+    mapStore.addingPoint.lat = mglEvent.event.lngLat.lat;
+    mapStore.addingPoint.long = mglEvent.event.lngLat.lng;
+  }
+}
 
 onMounted(() => {
   mapStore.init();
@@ -18,6 +35,7 @@ onMounted(() => {
         :map-style="style"
         :center="CENTER_MX"
         :zoom="MAP_ZOOM"
+        @map:dblclick="onDoubleClick"
       >
         <MglNavigationControl />
         <MglMarker
@@ -30,8 +48,9 @@ onMounted(() => {
               class="tooltip tooltip-top hover:cursor-pointer"
               :class="{ 'tooltip-open': mapStore.selectedPoint?.id === point.id }"
               :data-tip="point.name"
-              @mouseenter="mapStore.selectPointWithoutFlyTo(point)"
-              @mouseleave="mapStore.selectPointWithoutFlyTo(null)"
+              @mouseenter="mapStore.selectedPoint = point"
+              @mouseleave="mapStore.selectedPoint = null"
+              @click="mapStore.clickedPoint = point"
             >
               <Icon
                 name="tabler:map-pin-filled"
@@ -40,7 +59,9 @@ onMounted(() => {
               />
             </div>
           </template>
-          <MglPopup>
+          <MglPopup
+            @close="mapStore.clickedPoint = null"
+          >
             <div class="p-2">
               <h3 class="font-bold text-lg">
                 {{ point.name }}
@@ -50,6 +71,27 @@ onMounted(() => {
               </p>
             </div>
           </MglPopup>
+        </MglMarker>
+
+        <!-- User select marker -->
+        <MglMarker
+          v-if="mapStore.addingPoint"
+          :coordinates="[mapStore.addingPoint.long, mapStore.addingPoint.lat]"
+          draggable
+          @update:coordinates="updateAddedPoint($event)"
+        >
+          <template #marker>
+            <div
+              class="tooltip tooltip-top tooltip-open hover:cursor-pointer"
+              data-tip="Drag me to a location"
+            >
+              <Icon
+                name="tabler:map-pin-filled"
+                size="35"
+                class="text-warning"
+              />
+            </div>
+          </template>
         </MglMarker>
       </MglMap>
     </div>

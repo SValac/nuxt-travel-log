@@ -2,17 +2,23 @@
 import type { FetchError } from 'ofetch';
 
 import { toTypedSchema } from '@vee-validate/zod';
+import { CENTER_MX } from '~~/lib/constans';
 import { locationInsertSchema } from '~~/lib/db/schema';
 
 const { $csrfFetch } = useNuxtApp();
 
 const router = useRouter();
+const mapStore = useMapStore();
 const submitError = ref('');
 const isLoading = ref(false);
 const isSubmitted = ref(false);
 
-const { handleSubmit, errors, meta, setErrors } = useForm({
+const { handleSubmit, errors, meta, setErrors, setFieldValue, controlledValues } = useForm({
   validationSchema: toTypedSchema(locationInsertSchema),
+  initialValues: {
+    long: (CENTER_MX as [number, number])[0],
+    lat: (CENTER_MX as [number, number])[1],
+  },
 });
 
 const onSubmit = handleSubmit(async (values) => {
@@ -38,6 +44,29 @@ const onSubmit = handleSubmit(async (values) => {
   }
 });
 
+function formatNumber(value?: number) {
+  if (!value)
+    return 0;
+  return value.toFixed(5);
+}
+
+effect(() => {
+  if (mapStore.addingPoint) {
+    setFieldValue('lat', mapStore.addingPoint.lat);
+    setFieldValue('long', mapStore.addingPoint.long);
+  }
+});
+
+onMounted(() => {
+  mapStore.addingPoint = {
+    id: 0,
+    name: 'Adding Location',
+    description: '',
+    long: (CENTER_MX as [number, number])[0],
+    lat: (CENTER_MX as [number, number])[1],
+  };
+});
+
 onBeforeRouteLeave(() => {
   if (!isSubmitted.value && meta.value.dirty) {
     // eslint-disable-next-line no-alert
@@ -46,12 +75,13 @@ onBeforeRouteLeave(() => {
       return false;
     }
   }
+  mapStore.addingPoint = null;
   return true;
 });
 </script>
 
 <template>
-  <div class="container mx-auto max-w-md">
+  <div class="container mx-auto max-w-md p-4">
     <div class="my-4">
       <h1 class="text-start text-lg">
         Add Location
@@ -82,20 +112,17 @@ onBeforeRouteLeave(() => {
         :error="errors.description"
         :disabled="isLoading"
       />
-      <AppFormField
-        name="lat"
-        label="Latitude"
-        type="number"
-        :error="errors.lat"
-        :disabled="isLoading"
-      />
-      <AppFormField
-        name="long"
-        label="Longitude"
-        type="number"
-        :error="errors.long"
-        :disabled="isLoading"
-      />
+      <p>
+        Drag the <Icon
+          name="tabler:map-pin-filled"
+          class="text-warning"
+          size="16"
+        /> marker to desired location.
+      </p>
+      <p>Or double click on the map.</p>
+      <p class="text-sm text-gray-400">
+        Current location: {{ formatNumber(controlledValues.lat) }}, {{ formatNumber(controlledValues.long) }}
+      </p>
       <div class="flex justify-end gap-2">
         <button
           type="button"

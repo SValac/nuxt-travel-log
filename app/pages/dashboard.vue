@@ -71,6 +71,7 @@ function toggleSidebar() {
             :icon-color="mapStore.selectedPoint?.id === item.location?.id ? 'text-accent' : undefined"
             @mouseenter="mapStore.selectedPoint = item.location ?? null"
             @mouseleave="mapStore.selectedPoint = null"
+            @click="mapStore.clickedPoint = item.location ?? null"
           />
         </template>
         <div class="divider" />
@@ -82,8 +83,8 @@ function toggleSidebar() {
         />
       </div>
     </div>
-    <div class="flex-1 overflow-auto">
-      <div class="flex flex-col size-full">
+    <div class="flex-1 bg-base-200 overflow-auto">
+      <div class="flex size-full" :class="{ 'flex-col': route.path === '/dashboard' }">
         <NuxtPage class="" />
         <AppMap class="flex-1" />
       </div>
