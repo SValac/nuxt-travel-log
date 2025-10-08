@@ -4,3 +4,29 @@
     light --default,
     dark --prefersdark;
 }
+
+.maplibregl-popup-close-button {
+  @apply px-2;
+}
+
+html[data-theme='dark'] {
+  .maplibregl-popup-content {
+    @apply text-white bg-gray-800;
+  }
+
+  .maplibregl-popup[class*='maplibregl-popup-anchor-bottom'] > .maplibregl-popup-tip {
+    @apply border-t-gray-800;
+  }
+
+  .maplibregl-popup[class*='maplibregl-popup-anchor-top'] > .maplibregl-popup-tip {
+    @apply border-b-gray-800;
+  }
+
+  .maplibregl-popup[class*='maplibregl-popup-anchor-left'] > .maplibregl-popup-tip {
+    @apply border-r-gray-800;
+  }
+
+  .maplibregl-popup[class*='maplibregl-popup-anchor-right'] > .maplibregl-popup-tip {
+    @apply border-l-gray-800;
+  }
+}

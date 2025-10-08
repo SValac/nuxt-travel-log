@@ -1,9 +1,10 @@
 <script setup lang="ts">
 const locationsStore = useLocationStore();
+const mapStore = useMapStore();
 const { locations, status } = storeToRefs(locationsStore);
 
 /*
-  video timestamp 4:29:21
+  video timestamp 5:29:21
 */
 
 onMounted(() => {
@@ -23,13 +24,19 @@ onMounted(() => {
       <div
         v-for="location in locations"
         :key="location.id"
-        class="card card-compact bg-base-300 h-40 w-74 shrink-0"
+        class="card card-compact bg-base-300 h-40 w-74 mb-2 shrink-0 border-2 hover:cursor-pointer"
+        :class="{
+          'border-accent': location.id === mapStore.selectedPoint?.id,
+          'border-transparent': location.id !== mapStore.selectedPoint?.id,
+        }"
+        @mouseenter="mapStore.selectedPoint = location"
+        @mouseleave="mapStore.selectedPoint = null"
       >
         <div class="card-body ">
           <h3 class="text-lg font-bold text-ellipsis line-clamp-1">
             {{ location.name }}
           </h3>
-          <p class="overflow-hidden text-ellipsis line-clamp-4">
+          <p class="text-pretty overflow-hidden text-ellipsis line-clamp-4">
             {{ location.description }}
           </p>
         </div>
