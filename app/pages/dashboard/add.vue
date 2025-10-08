@@ -13,7 +13,7 @@ const submitError = ref('');
 const isLoading = ref(false);
 const isSubmitted = ref(false);
 
-const { handleSubmit, errors, meta, setErrors, setFieldValue } = useForm({
+const { handleSubmit, errors, meta, setErrors, setFieldValue, controlledValues } = useForm({
   validationSchema: toTypedSchema(locationInsertSchema),
 });
 
@@ -39,6 +39,12 @@ const onSubmit = handleSubmit(async (values) => {
     isLoading.value = false;
   }
 });
+
+function formatNumber(value?: number) {
+  if (!value)
+    return 0;
+  return value.toFixed(5);
+}
 
 effect(() => {
   if (mapStore.addingPoint) {
@@ -102,20 +108,16 @@ onBeforeRouteLeave(() => {
         :error="errors.description"
         :disabled="isLoading"
       />
-      <AppFormField
-        name="lat"
-        label="Latitude"
-        type="number"
-        :error="errors.lat"
-        :disabled="isLoading"
-      />
-      <AppFormField
-        name="long"
-        label="Longitude"
-        type="number"
-        :error="errors.long"
-        :disabled="isLoading"
-      />
+      <p>
+        Drag the <Icon
+          name="tabler:map-pin-filled"
+          class="text-warning"
+          size="16"
+        /> marker to desired location.
+      </p>
+      <p class="text-sm text-gray-400">
+        Current location: {{ formatNumber(controlledValues.lat) }}, {{ formatNumber(controlledValues.long) }}
+      </p>
       <div class="flex justify-end gap-2">
         <button
           type="button"
