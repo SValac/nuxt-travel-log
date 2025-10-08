@@ -11,6 +11,9 @@ to address this we can dynamically import this modules inside a function which w
 export const useMapStore = defineStore('useMapStore', () => {
   const mapPoints = ref<MapPoint[]>([]);
   const selectedPoint = ref<MapPoint | null>(null);
+  const addingPoint = ref<MapPoint | null>(null);
+  // this variable is used to control if the map should fly to the selected point or not
+  // this is useful when selecting a point from the list, we don't want the map to fly to the point
   const shouldFlyTo = ref(true);
 
   function selectPointWithoutFlyTo(point: MapPoint | null) {
@@ -47,6 +50,8 @@ export const useMapStore = defineStore('useMapStore', () => {
     });
 
     effect(() => {
+      if (addingPoint.value)
+        return;
       if (selectedPoint.value) {
         if (shouldFlyTo.value) {
           map.map?.flyTo({
@@ -67,6 +72,7 @@ export const useMapStore = defineStore('useMapStore', () => {
   return {
     mapPoints,
     selectedPoint,
+    addingPoint,
     init,
     selectPointWithoutFlyTo,
   };

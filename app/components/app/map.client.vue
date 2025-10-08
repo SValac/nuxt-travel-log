@@ -1,10 +1,19 @@
 <script setup lang="ts">
+import type { LngLat } from 'maplibre-gl';
+
 import { CENTER_MX, MAP_DARK_STYLE, MAP_LIGHT_STYLE, MAP_ZOOM } from '~~/lib/constans';
 
 const mapStore = useMapStore();
 
 const colorMode = useColorMode();
 const style = computed(() => colorMode.value === 'dark' ? MAP_DARK_STYLE : MAP_LIGHT_STYLE);
+
+function updateAddedPoint(location: LngLat) {
+  if (mapStore.addingPoint) {
+    mapStore.addingPoint.lat = location.lat;
+    mapStore.addingPoint.long = location.lng;
+  }
+}
 
 onMounted(() => {
   mapStore.init();
@@ -50,6 +59,27 @@ onMounted(() => {
               </p>
             </div>
           </MglPopup>
+        </MglMarker>
+
+        <!-- User select marker -->
+        <MglMarker
+          v-if="mapStore.addingPoint"
+          :coordinates="CENTER_MX"
+          draggable
+          @update:coordinates="updateAddedPoint($event)"
+        >
+          <template #marker>
+            <div
+              class="tooltip tooltip-top hover:cursor-pointer"
+              data-tip="Darg me to select a location"
+            >
+              <Icon
+                name="tabler:map-pin-filled"
+                size="35"
+                class="text-warning"
+              />
+            </div>
+          </template>
         </MglMarker>
       </MglMap>
     </div>

@@ -2,16 +2,18 @@
 import type { FetchError } from 'ofetch';
 
 import { toTypedSchema } from '@vee-validate/zod';
+import { CENTER_MX } from '~~/lib/constans';
 import { locationInsertSchema } from '~~/lib/db/schema';
 
 const { $csrfFetch } = useNuxtApp();
 
 const router = useRouter();
+const mapStore = useMapStore();
 const submitError = ref('');
 const isLoading = ref(false);
 const isSubmitted = ref(false);
 
-const { handleSubmit, errors, meta, setErrors } = useForm({
+const { handleSubmit, errors, meta, setErrors, setFieldValue } = useForm({
   validationSchema: toTypedSchema(locationInsertSchema),
 });
 
@@ -38,6 +40,23 @@ const onSubmit = handleSubmit(async (values) => {
   }
 });
 
+effect(() => {
+  if (mapStore.addingPoint) {
+    setFieldValue('lat', mapStore.addingPoint.lat);
+    setFieldValue('long', mapStore.addingPoint.long);
+  }
+});
+
+onMounted(() => {
+  mapStore.addingPoint = {
+    id: 0,
+    name: 'Adding Location',
+    description: '',
+    long: (CENTER_MX as [number, number])[0],
+    lat: (CENTER_MX as [number, number])[1],
+  };
+});
+
 onBeforeRouteLeave(() => {
   if (!isSubmitted.value && meta.value.dirty) {
     // eslint-disable-next-line no-alert
@@ -46,6 +65,7 @@ onBeforeRouteLeave(() => {
       return false;
     }
   }
+  mapStore.addingPoint = null;
   return true;
 });
 </script>
