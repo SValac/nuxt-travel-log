@@ -1,4 +1,5 @@
 import type { MapPoint } from '~~/lib/types';
+import type { LngLatBounds } from 'maplibre-gl';
 /*
 the error "The requested module 'maplibre-gl' does not provide an export named 'LngLat'" is because maplibre-gl are not meant to be imported directly in node environment (like during SSR). ONLY in client side.
 
@@ -10,6 +11,12 @@ to address this we can dynamically import this modules inside a function which w
 export const useMapStore = defineStore('useMapStore', () => {
   const mapPoints = ref<MapPoint[]>([]);
   const selectedPoint = ref<MapPoint | null>(null);
+  const shouldFlyTo = ref(true);
+
+  function selectPointWithoutFlyTo(point: MapPoint | null) {
+    shouldFlyTo.value = false;
+    selectedPoint.value = point;
+  }
 
   async function init() {
     // here we dynamically import the module only when this function is called (which should be only in client side)
@@ -18,12 +25,15 @@ export const useMapStore = defineStore('useMapStore', () => {
 
     const map = useMap();
 
+    let bounds: LngLatBounds | null = null;
+    const padding = 50;
+
     effect(() => {
       const firstPoint = mapPoints.value[0];
       if (!firstPoint)
         return;
 
-      const bounds = mapPoints.value.reduce((bounds, point) => {
+      bounds = mapPoints.value.reduce((bounds, point) => {
         return bounds.extend([point.long, point.lat]);
       }, new LngLatBounds(
         [firstPoint.long, firstPoint.lat],
@@ -31,9 +41,26 @@ export const useMapStore = defineStore('useMapStore', () => {
       ));
 
       map.map?.fitBounds(bounds, {
-        padding: 50,
+        padding,
 
       });
+    });
+
+    effect(() => {
+      if (selectedPoint.value) {
+        if (shouldFlyTo.value) {
+          map.map?.flyTo({
+            center: [selectedPoint.value.long, selectedPoint.value.lat],
+
+          });
+        }
+        shouldFlyTo.value = true;
+      }
+      else if (bounds) {
+        map.map?.fitBounds(bounds, {
+          padding,
+        });
+      }
     });
   }
 
@@ -41,5 +68,6 @@ export const useMapStore = defineStore('useMapStore', () => {
     mapPoints,
     selectedPoint,
     init,
+    selectPointWithoutFlyTo,
   };
 });
