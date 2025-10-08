@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { MglEvent } from '@indoorequal/vue-maplibre-gl';
 import type { LngLat } from 'maplibre-gl';
 
 import { CENTER_MX, MAP_DARK_STYLE, MAP_LIGHT_STYLE, MAP_ZOOM } from '~~/lib/constans';
@@ -15,6 +16,13 @@ function updateAddedPoint(location: LngLat) {
   }
 }
 
+function onDoubleClick(mglEvent: MglEvent<'dblclick'>) {
+  if (mapStore.addingPoint) {
+    mapStore.addingPoint.lat = mglEvent.event.lngLat.lat;
+    mapStore.addingPoint.long = mglEvent.event.lngLat.lng;
+  }
+}
+
 onMounted(() => {
   mapStore.init();
 });
@@ -27,6 +35,7 @@ onMounted(() => {
         :map-style="style"
         :center="CENTER_MX"
         :zoom="MAP_ZOOM"
+        @map:dblclick="onDoubleClick"
       >
         <MglNavigationControl />
         <MglMarker
@@ -67,7 +76,7 @@ onMounted(() => {
         <!-- User select marker -->
         <MglMarker
           v-if="mapStore.addingPoint"
-          :coordinates="CENTER_MX"
+          :coordinates="[mapStore.addingPoint.long, mapStore.addingPoint.lat]"
           draggable
           @update:coordinates="updateAddedPoint($event)"
         >

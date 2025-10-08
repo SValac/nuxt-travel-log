@@ -119,6 +119,7 @@ onBeforeRouteLeave(() => {
           size="16"
         /> marker to desired location.
       </p>
+      <p>Or double click on the map.</p>
       <p class="text-sm text-gray-400">
         Current location: {{ formatNumber(controlledValues.lat) }}, {{ formatNumber(controlledValues.long) }}
       </p>
