@@ -27,10 +27,11 @@ export const useLocationStore = defineStore('useLocationStore', () => {
   effect(() => {
     if (data.value) {
       sidebarStore.sidebarItems = data.value.map(location => ({
-        id: `location-${location.id}`,
+        id: location.id,
         label: location.name,
         icon: 'tabler:map-pin-filled',
         href: `#`,
+        location, // we can directly assign location as its already of type MapPoint
       }));
       mapStore.mapPoints = data.value; // both types matches so we don't need map now
       // .map(location => ({
