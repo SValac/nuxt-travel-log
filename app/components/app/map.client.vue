@@ -39,8 +39,9 @@ onMounted(() => {
               class="tooltip tooltip-top hover:cursor-pointer"
               :class="{ 'tooltip-open': mapStore.selectedPoint?.id === point.id }"
               :data-tip="point.name"
-              @mouseenter="mapStore.selectPointWithoutFlyTo(point)"
-              @mouseleave="mapStore.selectPointWithoutFlyTo(null)"
+              @mouseenter="mapStore.selectedPoint = point"
+              @mouseleave="mapStore.selectedPoint = null"
+              @click="mapStore.clickedPoint = point"
             >
               <Icon
                 name="tabler:map-pin-filled"
@@ -49,7 +50,9 @@ onMounted(() => {
               />
             </div>
           </template>
-          <MglPopup>
+          <MglPopup
+            @close="mapStore.clickedPoint = null"
+          >
             <div class="p-2">
               <h3 class="font-bold text-lg">
                 {{ point.name }}
@@ -70,8 +73,8 @@ onMounted(() => {
         >
           <template #marker>
             <div
-              class="tooltip tooltip-top hover:cursor-pointer"
-              data-tip="Darg me to select a location"
+              class="tooltip tooltip-top tooltip-open hover:cursor-pointer"
+              data-tip="Drag me to a location"
             >
               <Icon
                 name="tabler:map-pin-filled"
