@@ -12,14 +12,10 @@ export const useMapStore = defineStore('useMapStore', () => {
   const mapPoints = ref<MapPoint[]>([]);
   const selectedPoint = ref<MapPoint | null>(null);
   const addingPoint = ref<MapPoint | null>(null);
+  const clickedPoint = ref<MapPoint | null>(null);
+  const shouldOpenPopup = ref(false);
   // this variable is used to control if the map should fly to the selected point or not
   // this is useful when selecting a point from the list, we don't want the map to fly to the point
-  const shouldFlyTo = ref(true);
-
-  function selectPointWithoutFlyTo(point: MapPoint | null) {
-    shouldFlyTo.value = false;
-    selectedPoint.value = point;
-  }
 
   async function init() {
     // here we dynamically import the module only when this function is called (which should be only in client side)
@@ -49,23 +45,32 @@ export const useMapStore = defineStore('useMapStore', () => {
       });
     });
 
-    effect(() => {
-      if (addingPoint.value)
-        return;
-      if (selectedPoint.value) {
-        if (shouldFlyTo.value) {
-          map.map?.flyTo({
-            center: [selectedPoint.value.long, selectedPoint.value.lat],
-
-          });
-        }
-        shouldFlyTo.value = true;
+    watch(clickedPoint, (newValue) => {
+      if (newValue) {
+        map.map?.flyTo({
+          center: [newValue.long, newValue.lat],
+          zoom: 10,
+        });
+        selectedPoint.value = newValue;
       }
       else if (bounds) {
         map.map?.fitBounds(bounds, {
           padding,
         });
+        selectedPoint.value = null;
       }
+    });
+
+    watch(addingPoint, (newValue, oldValue) => {
+      if (newValue && !oldValue) {
+        // If a new point is being added, we can set the map's view to the new point
+        map.map?.flyTo({
+          center: [newValue.long, newValue.lat],
+          zoom: 6,
+        });
+      }
+    }, {
+      immediate: true,
     });
   }
 
@@ -73,7 +78,8 @@ export const useMapStore = defineStore('useMapStore', () => {
     mapPoints,
     selectedPoint,
     addingPoint,
+    clickedPoint,
+    shouldOpenPopup,
     init,
-    selectPointWithoutFlyTo,
   };
 });

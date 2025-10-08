@@ -31,6 +31,7 @@ onMounted(() => {
         }"
         @mouseenter="mapStore.selectedPoint = location"
         @mouseleave="mapStore.selectedPoint = null"
+        @click="mapStore.clickedPoint = location ?? null"
       >
         <div class="card-body ">
           <h3 class="text-lg font-bold text-ellipsis line-clamp-1">

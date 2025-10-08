@@ -15,6 +15,10 @@ const isSubmitted = ref(false);
 
 const { handleSubmit, errors, meta, setErrors, setFieldValue, controlledValues } = useForm({
   validationSchema: toTypedSchema(locationInsertSchema),
+  initialValues: {
+    long: (CENTER_MX as [number, number])[0],
+    lat: (CENTER_MX as [number, number])[1],
+  },
 });
 
 const onSubmit = handleSubmit(async (values) => {
