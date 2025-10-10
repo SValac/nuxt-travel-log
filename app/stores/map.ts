@@ -11,7 +11,7 @@ to address this we can dynamically import this modules inside a function which w
 export const useMapStore = defineStore('useMapStore', () => {
   const mapPoints = ref<MapPoint[]>([]);
   const selectedPoint = ref<MapPoint | null>(null);
-  const addingPoint = ref<MapPoint | null>(null);
+  const addingPoint = ref<MapPoint & { centerMap?: boolean } | null>(null);
   const clickedPoint = ref<MapPoint | null>(null);
   const shouldOpenPopup = ref(false);
   // this variable is used to control if the map should fly to the selected point or not
@@ -62,7 +62,7 @@ export const useMapStore = defineStore('useMapStore', () => {
     });
 
     watch(addingPoint, (newValue, oldValue) => {
-      if (newValue && !oldValue) {
+      if ((newValue && !oldValue) || newValue?.centerMap) {
         // If a new point is being added, we can set the map's view to the new point
         map.map?.flyTo({
           center: [newValue.long, newValue.lat],

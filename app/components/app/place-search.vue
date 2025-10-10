@@ -8,9 +8,20 @@ const emits = defineEmits<{
 }>();
 
 const searchResults = ref<NominatimResult[]>([]);
+const searchResultForm = useTemplateRef('searchLocationForm');
+const isLoading = ref(false);
+
+function setLocation(result: NominatimResult) {
+  emits('resultSelected', result);
+  searchResults.value.length = 0;
+  if (searchResultForm.value) {
+    searchResultForm.value.resetForm();
+  }
+}
 
 async function onSubmit(query: Record<string, string>) {
   try {
+    isLoading.value = true;
     const results = await $fetch('/api/v1/search', {
       query,
     });
@@ -19,12 +30,16 @@ async function onSubmit(query: Record<string, string>) {
   catch (error) {
     console.error(error);
   }
+  finally {
+    isLoading.value = false;
+  }
 }
 </script>
 
 <template>
   <div class="flex flex-col gap-2">
     <Form
+      ref="searchLocationForm"
       v-slot="{ errors }"
       class="flex flex-col gap-2 items-center"
       :validation-schema="toTypedSchema(SearchSchema)"
@@ -39,6 +54,7 @@ async function onSubmit(query: Record<string, string>) {
               type="text"
               name="q"
               placeholder="Search for a location"
+              :disabled="isLoading"
               :class="{
                 'input-error': errors.q,
               }"
@@ -47,11 +63,12 @@ async function onSubmit(query: Record<string, string>) {
             {{ errors.q }}
           </div>
         </div>
-        <button class="btn btn-neutral join-item">
+        <button :disabled="isLoading" class="btn btn-neutral join-item">
           Search
         </button>
       </div>
     </Form>
+    <div v-if="isLoading" class="loading loading-lg mx-auto" />
     <div class="flex flex-col gap-2 overflow-auto max-h-52">
       <div
         v-for="result in searchResults"
@@ -63,7 +80,7 @@ async function onSubmit(query: Record<string, string>) {
             {{ result.display_name }}
           </h4>
           <div class="justify-end card-actions">
-            <button class="btn btn-primary btn-sm" @click="emits('resultSelected', result)">
+            <button class="btn btn-primary btn-sm" @click="setLocation(result)">
               Set Location
               <Icon name="tabler:map-pin-share" size="18" />
             </button>
