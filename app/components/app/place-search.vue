@@ -3,6 +3,10 @@ import type { NominatimResult } from '~~/lib/types';
 
 import { SearchSchema } from '~~/lib/zod-schemas';
 
+const emits = defineEmits<{
+  resultSelected: [result: NominatimResult];
+}>();
+
 const searchResults = ref<NominatimResult[]>([]);
 
 async function onSubmit(query: Record<string, string>) {
@@ -59,7 +63,7 @@ async function onSubmit(query: Record<string, string>) {
             {{ result.display_name }}
           </h4>
           <div class="justify-end card-actions">
-            <button class="btn btn-primary btn-sm">
+            <button class="btn btn-primary btn-sm" @click="emits('resultSelected', result)">
               Set Location
               <Icon name="tabler:map-pin-share" size="18" />
             </button>

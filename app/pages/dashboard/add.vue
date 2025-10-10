@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { NominatimResult } from '~~/lib/types';
 import type { FetchError } from 'ofetch';
 
 import { toTypedSchema } from '@vee-validate/zod';
@@ -48,6 +49,18 @@ function formatNumber(value?: number) {
   if (!value)
     return 0;
   return value.toFixed(5);
+}
+
+function searchResultSelected(result: NominatimResult) {
+  setFieldValue('name', result.display_name);
+  mapStore.addingPoint = {
+    id: 0,
+    name: result.display_name,
+    description: '',
+    lat: +result.lat,
+    long: +result.lon,
+
+  };
 }
 
 effect(() => {
@@ -152,7 +165,7 @@ onBeforeRouteLeave(() => {
       </div>
     </form>
     <div class="divider" />
-    <AppPlaceSearch />
+    <AppPlaceSearch @result-selected="searchResultSelected" />
   </div>
 </template>
 
