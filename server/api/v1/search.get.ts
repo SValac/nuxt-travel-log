@@ -1,3 +1,5 @@
+import type { NominatimResult } from '~~/lib/types';
+
 import { SearchSchema } from '~~/lib/zod-schemas';
 import sendZodError from '~~/server/utils/send-zod-error';
 
@@ -23,7 +25,7 @@ export default defineAuthenticatedEventHandler(
           statusMessage: 'unable to reach search api',
         }));
       }
-      const results = await response.json();
+      const results = await response.json() as NominatimResult[];
       return results;
     }
     catch {
