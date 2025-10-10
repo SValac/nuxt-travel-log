@@ -59,6 +59,7 @@ function searchResultSelected(result: NominatimResult) {
     description: '',
     lat: +result.lat,
     long: +result.lon,
+    centerMap: true,
 
   };
 }
