@@ -127,17 +127,21 @@ onBeforeRouteLeave(() => {
         :error="errors.description"
         :disabled="isLoading"
       />
-      <p>
-        Drag the <Icon
-          name="tabler:map-pin-filled"
-          class="text-warning"
-          size="16"
-        /> marker to desired location.
-      </p>
-      <p>Or double click on the map.</p>
       <p class="text-sm text-gray-400">
-        Current location: {{ formatNumber(controlledValues.lat) }}, {{ formatNumber(controlledValues.long) }}
+        Current coordinates: {{ formatNumber(controlledValues.lat) }}, {{ formatNumber(controlledValues.long) }}
       </p>
+      <p>To set the coordinates:</p>
+      <ul class="list-disc list-inside text-sm">
+        <li>
+          Drag the <Icon
+            name="tabler:map-pin-filled"
+            class="text-warning"
+            size="16"
+          /> marker on the map.
+        </li>
+        <li>Double click the map.</li>
+        <li>Search for a location below.</li>
+      </ul>
       <div class="flex justify-end gap-2">
         <button
           type="button"
