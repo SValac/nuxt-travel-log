@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import type { NominatimResult } from '~~/lib/types';
 import type { FetchError } from 'ofetch';
 
 import { toTypedSchema } from '@vee-validate/zod';
 import { CENTER_MX } from '~~/lib/constans';
 import { locationInsertSchema } from '~~/lib/db/schema';
+import getFetchErrorMessage from '~~/server/utils/get-fetch-error-message';
 
 const { $csrfFetch } = useNuxtApp();
 
@@ -37,7 +39,7 @@ const onSubmit = handleSubmit(async (values) => {
     if (error.data?.data) {
       setErrors(error.data?.data);
     }
-    submitError.value = error.data?.statusMessage || error.statusMessage || 'An error occurred while adding the location.';
+    submitError.value = getFetchErrorMessage(error);
   }
   finally {
     isLoading.value = false;
@@ -48,6 +50,19 @@ function formatNumber(value?: number) {
   if (!value)
     return 0;
   return value.toFixed(5);
+}
+
+function searchResultSelected(result: NominatimResult) {
+  setFieldValue('name', result.display_name);
+  mapStore.addingPoint = {
+    id: 0,
+    name: result.display_name,
+    description: '',
+    lat: +result.lat,
+    long: +result.lon,
+    centerMap: true,
+
+  };
 }
 
 effect(() => {
@@ -112,17 +127,21 @@ onBeforeRouteLeave(() => {
         :error="errors.description"
         :disabled="isLoading"
       />
-      <p>
-        Drag the <Icon
-          name="tabler:map-pin-filled"
-          class="text-warning"
-          size="16"
-        /> marker to desired location.
-      </p>
-      <p>Or double click on the map.</p>
       <p class="text-sm text-gray-400">
-        Current location: {{ formatNumber(controlledValues.lat) }}, {{ formatNumber(controlledValues.long) }}
+        Current coordinates: {{ formatNumber(controlledValues.lat) }}, {{ formatNumber(controlledValues.long) }}
       </p>
+      <p>To set the coordinates:</p>
+      <ul class="list-disc list-inside text-sm">
+        <li>
+          Drag the <Icon
+            name="tabler:map-pin-filled"
+            class="text-warning"
+            size="16"
+          /> marker on the map.
+        </li>
+        <li>Double click the map.</li>
+        <li>Search for a location below.</li>
+      </ul>
       <div class="flex justify-end gap-2">
         <button
           type="button"
@@ -151,6 +170,8 @@ onBeforeRouteLeave(() => {
         </button>
       </div>
     </form>
+    <div class="divider" />
+    <AppPlaceSearch @result-selected="searchResultSelected" />
   </div>
 </template>
 
