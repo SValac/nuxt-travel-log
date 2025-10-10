@@ -5,6 +5,7 @@ import type { FetchError } from 'ofetch';
 import { toTypedSchema } from '@vee-validate/zod';
 import { CENTER_MX } from '~~/lib/constans';
 import { locationInsertSchema } from '~~/lib/db/schema';
+import getFetchErrorMessage from '~~/server/utils/get-fetch-error-message';
 
 const { $csrfFetch } = useNuxtApp();
 
@@ -38,7 +39,7 @@ const onSubmit = handleSubmit(async (values) => {
     if (error.data?.data) {
       setErrors(error.data?.data);
     }
-    submitError.value = error.data?.statusMessage || error.statusMessage || 'An error occurred while adding the location.';
+    submitError.value = getFetchErrorMessage(error);
   }
   finally {
     isLoading.value = false;
