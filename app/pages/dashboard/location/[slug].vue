@@ -1,10 +1,17 @@
 <script setup lang="ts">
 const route = useRoute();
+const mapStore = useMapStore();
 const { slug } = route.params;
 
 // we use useFetch becase we want to call our own API endpoint
 const { data: location, status, error } = useFetch(`/api/v1/locations/${slug}`, {
   lazy: true,
+});
+
+effect(() => {
+  if (location.value) {
+    mapStore.mapPoints = [location.value];
+  }
 });
 </script>
 
