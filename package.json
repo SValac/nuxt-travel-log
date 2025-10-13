@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "typecheck": "nuxt typecheck",
     "prepare": "husky",
     "note about db:dev": "need to run in windows WSL",
     "db:dev": "turso dev --db-file local.db",
@@ -51,7 +52,8 @@
     "eslint-plugin-format": "^1.0.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.0",
-    "nuxt-csurf": "^1.6.5"
+    "nuxt-csurf": "^1.6.5",
+    "vue-tsc": "^3.1.1"
   },
   "lint-staged": {
     "*": "npm run lint"
