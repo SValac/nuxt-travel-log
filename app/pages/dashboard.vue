@@ -65,7 +65,7 @@ function toggleSidebar() {
             v-for="item in sidebarStore.sidebarItems"
             :key="item.id"
             :show-label="isSidebarOpen"
-            :to="item.href"
+            :to="item.to"
             :icon="item.icon"
             :label="item.label"
             :icon-color="mapStore.selectedPoint?.id === item.location?.id ? 'text-accent' : undefined"

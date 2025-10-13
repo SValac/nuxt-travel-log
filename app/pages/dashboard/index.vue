@@ -4,7 +4,7 @@ const mapStore = useMapStore();
 const { locations, status } = storeToRefs(locationsStore);
 
 /*
-  video timestamp 6:20:21
+  video timestamp 6:25:21
 */
 
 onMounted(() => {
@@ -21,9 +21,10 @@ onMounted(() => {
       <span class="loading loading-spinner loading-xl" />
     </div>
     <div v-else-if="locations && locations.length > 0" class="flex flex-nowrap gap-2 mt-2 overflow-auto">
-      <div
+      <NuxtLink
         v-for="location in locations"
         :key="location.id"
+        :to="{ name: 'dashboard-location-slug', params: { slug: location.slug } }"
         class="card card-compact bg-base-300 h-40 w-74 mb-2 shrink-0 border-2 hover:cursor-pointer"
         :class="{
           'border-accent': location.id === mapStore.selectedPoint?.id,
@@ -41,7 +42,7 @@ onMounted(() => {
             {{ location.description }}
           </p>
         </div>
-      </div>
+      </NuxtLink>
     </div>
     <div
       v-else
