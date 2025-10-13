@@ -30,7 +30,7 @@ export const useLocationStore = defineStore('useLocationStore', () => {
         id: location.id,
         label: location.name,
         icon: 'tabler:map-pin-filled',
-        href: `#`,
+        to: { name: 'dashboard-location-slug', params: { slug: location.slug } },
         location, // we can directly assign location as its already of type MapPoint
       }));
       mapStore.mapPoints = data.value; // both types matches so we don't need map now
