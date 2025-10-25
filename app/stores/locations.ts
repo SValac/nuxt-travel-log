@@ -1,3 +1,6 @@
+import type { SelectLocation } from '~~/lib/db/schema';
+import type { MapPoint } from '~~/lib/types';
+
 export const useLocationStore = defineStore('useLocationStore', () => {
   /*
   we dont use $fetch because this is used in response to user events/actions (clicking, typing, etc)
@@ -18,6 +21,17 @@ export const useLocationStore = defineStore('useLocationStore', () => {
   const sidebarStore = useSidebarStore();
   const mapStore = useMapStore();
 
+  /*
+  helper function to create MapPoint from location
+  */
+  function createMapPointFromLocation(location: SelectLocation): MapPoint {
+    return {
+      ...location,
+      to: { name: 'dashboard-location-slug', params: { slug: location.slug } },
+      toLabel: 'View Location',
+    };
+  }
+
   // check if data changes and update sidebarStore
   /*
   we use watchEffect because it runs immediately and whenever any reactive dependency changes BUT it does NOT run on server side, so we get hydration issues.
@@ -26,21 +40,22 @@ export const useLocationStore = defineStore('useLocationStore', () => {
   */
   effect(() => {
     if (data.value) {
-      sidebarStore.sidebarItems = data.value.map(location => ({
-        id: location.id,
-        label: location.name,
-        icon: 'tabler:map-pin-filled',
-        to: { name: 'dashboard-location-slug', params: { slug: location.slug } },
-        location, // we can directly assign location as its already of type MapPoint
-      }));
-      mapStore.mapPoints = data.value; // both types matches so we don't need map now
-      // .map(location => ({
-      //   id: location.id,
-      //   name: location.name,
-      //   description: location.description,
-      //   lat: location.lat,
-      //   long: location.long,
-      // }));
+      const mapPoints: MapPoint[] = [];
+      const sidebarItems: SidebarItem[] = [];
+
+      data.value.forEach((location) => {
+        const mapPoint = createMapPointFromLocation(location);
+        sidebarItems.push({
+          id: location.id,
+          label: location.name,
+          icon: 'mdi-map-marker',
+          mapPoint,
+        });
+        mapPoints.push(mapPoint);
+      });
+
+      mapStore.mapPoints = mapPoints;
+      sidebarStore.sidebarItems = sidebarItems;
     }
     sidebarStore.isLoading = status.value === 'pending';
   });
