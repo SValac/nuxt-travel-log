@@ -70,6 +70,15 @@ onMounted(() => {
               <p class="text-sm text-balance">
                 {{ point.description || 'No description available.' }}
               </p>
+              <div class="flex justify-end">
+                <NuxtLink
+                  v-if="point.to"
+                  :to="point.to"
+                  class="btn btn-sm btn-outline mt-2"
+                >
+                  {{ point.toLabel }}
+                </NuxtLink>
+              </div>
             </div>
           </MglPopup>
         </MglMarker>
