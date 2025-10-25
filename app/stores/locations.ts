@@ -1,5 +1,6 @@
-import type { SelectLocation } from '~~/lib/db/schema';
 import type { MapPoint } from '~~/lib/types';
+
+import { createMapPointFromLocation } from '~~/server/utils/map-points';
 
 export const useLocationStore = defineStore('useLocationStore', () => {
   /*
@@ -20,17 +21,6 @@ export const useLocationStore = defineStore('useLocationStore', () => {
 
   const sidebarStore = useSidebarStore();
   const mapStore = useMapStore();
-
-  /*
-  helper function to create MapPoint from location
-  */
-  function createMapPointFromLocation(location: SelectLocation): MapPoint {
-    return {
-      ...location,
-      to: { name: 'dashboard-location-slug', params: { slug: location.slug } },
-      toLabel: 'View Location',
-    };
-  }
 
   // check if data changes and update sidebarStore
   /*

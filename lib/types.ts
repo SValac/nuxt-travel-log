@@ -18,8 +18,8 @@ export type MapPoint = {
   id: number;
   name: string;
   description: string | null;
-  to: RouteLocationRaw;
-  toLabel: string;
+  to?: RouteLocationRaw;
+  toLabel?: string;
 } & LatLongItem;
 
 export type NominatimResult = {
