@@ -29,6 +29,18 @@ effect(() => {
       <p class="text-sm text-wrap">
         {{ location?.description }}
       </p>
+      <div>
+        <p
+          v-if="!location.locationLogs.length"
+          class="mt-4 text-sm italic"
+        >
+          Add a location to get started
+        </p>
+        <button class="btn btn-primary mt-2">
+          Add Location
+          <Icon name="tabler:map-pin-plus" size="24" />
+        </button>
+      </div>
     </div>
     <div v-if="error && status !== 'pending'" class="alert alert-error">
       <h3>
