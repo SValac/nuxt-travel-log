@@ -3,6 +3,7 @@ import type { MglEvent } from '@indoorequal/vue-maplibre-gl';
 import type { LngLat } from 'maplibre-gl';
 
 import { CENTER_MX, MAP_DARK_STYLE, MAP_LIGHT_STYLE, MAP_ZOOM } from '~~/lib/constans';
+import { isPointSelected } from '~~/server/utils/map-points';
 
 const mapStore = useMapStore();
 
@@ -46,7 +47,7 @@ onMounted(() => {
           <template #marker>
             <div
               class="tooltip tooltip-top hover:cursor-pointer"
-              :class="{ 'tooltip-open': mapStore.selectedPoint?.id === point.id }"
+              :class="{ 'tooltip-open': isPointSelected(point, mapStore.selectedPoint) }"
               :data-tip="point.name"
               @mouseenter="mapStore.selectedPoint = point"
               @mouseleave="mapStore.selectedPoint = null"
@@ -55,7 +56,7 @@ onMounted(() => {
               <Icon
                 name="tabler:map-pin-filled"
                 size="30"
-                :class="mapStore.selectedPoint?.id === point.id ? 'text-accent' : 'text-secondary'"
+                :class="isPointSelected(point, mapStore.selectedPoint) ? 'text-accent' : 'text-secondary'"
               />
             </div>
           </template>
@@ -69,6 +70,15 @@ onMounted(() => {
               <p class="text-sm text-balance">
                 {{ point.description || 'No description available.' }}
               </p>
+              <div class="flex justify-end">
+                <NuxtLink
+                  v-if="point.to"
+                  :to="point.to"
+                  class="btn btn-sm btn-outline mt-2"
+                >
+                  {{ point.toLabel }}
+                </NuxtLink>
+              </div>
             </div>
           </MglPopup>
         </MglMarker>
